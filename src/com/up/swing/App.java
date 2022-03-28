@@ -2,6 +2,7 @@ package com.up.swing;
 
 
 import com.up.service.HttpService;
+import com.up.swing.tabs.MainTab;
 import org.apache.hc.core5.http.ParseException;
 
 import javax.swing.*;
@@ -14,17 +15,31 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.List;
 
-public class App {
+public class App extends JFrame  {
     private final HttpService httpService = new HttpService();
+    private UrlBar urlBar;
+    private MainTab mainTab;
 
     public App() {
-        JFrame jf = new JFrame("Postman");
-        JComboBox methodComboBox = new JComboBox();
-        methodComboBox.addItem("GET");
-        methodComboBox.addItem("PUT");
-        methodComboBox.addItem("POST");
-        methodComboBox.addItem("DELETE");
-        JTextField urlTextField = new JTextField(30);
+        this.setTitle("Postman");
+
+        urlBar = new UrlBar();
+        mainTab = new MainTab();
+        this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        this.add(urlBar, BorderLayout.NORTH);
+        this.add(mainTab, BorderLayout.SOUTH);
+        this.setVisible(true);
+        this.pack();
+    }
+}
+
+
+
+
+
+
+
+       /* JTextField urlTextField = new JTextField(30);
         JTextArea responseTextArea = new JTextArea();
         JTextArea bodyTextArea = new JTextArea();
         JButton sendButton = new JButton("Send");
@@ -166,11 +181,4 @@ public class App {
         clearButtonConstraints.gridx = 0;
         clearButtonConstraints.gridy = 3;
         mainPanel.add(clearButton, clearButtonConstraints);
-
-
-        jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        jf.add(mainPanel);
-        jf.setVisible(true);
-        jf.pack();
-    }
-}
+*/
