@@ -22,10 +22,10 @@ import java.util.Iterator;
 import java.util.List;
 
 public class HttpService {
+    private CloseableHttpClient httpClient = HttpClients.createDefault();
 
     public List<String> executeRequest(String method, String url, String requestBody, List<Object> headers) throws IOException, ParseException {
         List<String> serverResponse = new ArrayList<>();
-        CloseableHttpClient httpClient = HttpClients.createDefault();
         Iterator it = headers.iterator();
         switch (method) {
 
@@ -50,7 +50,7 @@ public class HttpService {
                     ex.printStackTrace();
                     serverResponse.add(response);
                 }
-                httpClient.close();
+                //httpClient.close();
                 break;
 
 

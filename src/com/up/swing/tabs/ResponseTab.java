@@ -8,7 +8,6 @@ public class ResponseTab extends JPanel {
 
     public ResponseTab(){
         this.setLayout(new GridBagLayout());
-        this.setBackground(Color.RED);
         GridBagConstraints scrollPaneConstraints = new GridBagConstraints();
         scrollPaneConstraints.gridx=0;
         scrollPaneConstraints.gridy=0;
