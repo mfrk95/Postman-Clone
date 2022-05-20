@@ -1,13 +1,8 @@
 package com.up.service;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import org.apache.hc.client5.http.classic.methods.HttpGet;
-import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.classic.methods.HttpPut;
-import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
+import com.google.gson.*;
+import com.sun.deploy.net.JARSigningException;
+import org.apache.hc.client5.http.classic.methods.*;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
@@ -16,6 +11,7 @@ import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.io.entity.StringEntity;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -33,32 +29,30 @@ public class HttpService {
                 HttpGet getRequest = new HttpGet(url);
                 if (!headers.isEmpty()) {
                     while (it.hasNext()) {
-                        setHeaders(it.next(),getRequest);
+                        setHeaders(it.next(), getRequest);
                     }
                 }
                 CloseableHttpResponse getResponse = httpClient.execute(getRequest);
                 serverResponse.add((getResponse.getCode() + " " + getResponse.getReasonPhrase()));
                 serverResponse.add(getResponseColor(getResponse.getCode()));
                 HttpEntity entity = getResponse.getEntity();
+                String responseType = entity.getContentType();
                 Gson gson = new GsonBuilder().setPrettyPrinting().create();
                 String response = EntityUtils.toString(entity, "UTF-8");
-                try {
+                if(responseType.contains("application/json")){
                     JsonElement je = JsonParser.parseString(response);
                     String responseJson = gson.toJson(je);
                     serverResponse.add(responseJson);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                }else{
                     serverResponse.add(response);
                 }
-                //httpClient.close();
                 break;
-
 
             case "POST":
                 HttpPost postRequest = new HttpPost(url);
                 if (!headers.isEmpty()) {
                     while (it.hasNext()) {
-                        setHeaders(it.next(),postRequest);
+                        setHeaders(it.next(), postRequest);
                     }
                 }
                 StringEntity requestBodyEntity = new StringEntity(requestBody);
@@ -67,17 +61,16 @@ public class HttpService {
                 serverResponse.add(postResponse.getCode() + " " + postResponse.getReasonPhrase());
                 serverResponse.add(getResponseColor(postResponse.getCode()));
                 HttpEntity entity2 = postResponse.getEntity();
+                String responseType2 = entity2.getContentType();
                 Gson gson2 = new GsonBuilder().setPrettyPrinting().create();
                 String response2 = EntityUtils.toString(entity2, "UTF-8");
-                try {
-                    JsonElement je = JsonParser.parseString(response2);
-                    String responseJson = gson2.toJson(je);
-                    serverResponse.add(responseJson);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                if(responseType2.contains("application/json")){
+                    JsonElement je2 = JsonParser.parseString(response2);
+                    String responseJson2 = gson2.toJson(je2);
+                    serverResponse.add(responseJson2);
+                }else{
                     serverResponse.add(response2);
                 }
-                httpClient.close();
                 break;
 
 
@@ -85,33 +78,56 @@ public class HttpService {
                 HttpPut putRequest = new HttpPut(url);
                 if (!headers.isEmpty()) {
                     while (it.hasNext()) {
-                        setHeaders(it.next(),putRequest);
+                        setHeaders(it.next(), putRequest);
                     }
                 }
+
                 StringEntity requestBodyEntity2 = new StringEntity(requestBody);
                 putRequest.setEntity(requestBodyEntity2);
                 CloseableHttpResponse putResponse = httpClient.execute(putRequest);
                 serverResponse.add((putResponse.getCode() + " " + putResponse.getReasonPhrase()));
                 serverResponse.add(getResponseColor(putResponse.getCode()));
                 HttpEntity entity3 = putResponse.getEntity();
+                String responseType3 = entity3.getContentType();
                 Gson gson3 = new GsonBuilder().setPrettyPrinting().create();
                 String response3 = EntityUtils.toString(entity3, "UTF-8");
-                try {
-                    JsonElement je = JsonParser.parseString(response3);
-                    String responseJson = gson3.toJson(je);
-                    serverResponse.add(responseJson);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+                if(responseType3.contains("application/json")){
+                    JsonElement je3 = JsonParser.parseString(response3);
+                    String responseJson3 = gson3.toJson(je3);
+                    serverResponse.add(responseJson3);
+                }else{
                     serverResponse.add(response3);
                 }
-                httpClient.close();
-
-
                 break;
 
 
             case "DELETE":
-                System.out.println("Es un DELETE. La URL: " + url);
+                HttpDelete deleteRequest = new HttpDelete(url);
+                if (!headers.isEmpty()) {
+                    while (it.hasNext()) {
+                        setHeaders(it.next(), deleteRequest);
+                    }
+                }
+                StringEntity requestBodyEntity3 = new StringEntity(requestBody);
+                deleteRequest.setEntity(requestBodyEntity3);
+                CloseableHttpResponse deleteResponse = httpClient.execute(deleteRequest);
+                serverResponse.add((deleteResponse.getCode() + " " + deleteResponse.getReasonPhrase()));
+                serverResponse.add(getResponseColor(deleteResponse.getCode()));
+                HttpEntity entity4 = deleteResponse.getEntity();
+                String responseType4 = entity4.getContentType();
+                Gson gson4 = new GsonBuilder().setPrettyPrinting().create();
+                String response4 = EntityUtils.toString(entity4, "UTF-8");
+                if(response4.contains("application/json")){
+                    JsonElement je4 = JsonParser.parseString(response4);
+                    String responseJson4 = gson4.toJson(je4);
+                    serverResponse.add(responseJson4);
+                    serverResponse.add(response4);
+                }else{
+                    serverResponse.add(response4);
+                }
+                break;
+
+
         }
         return serverResponse;
 

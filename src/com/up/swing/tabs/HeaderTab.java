@@ -29,7 +29,9 @@ public class HeaderTab extends JPanel{
         headerTableModel = new DefaultTableModel();
         headerTableModel.addColumn("Key");
         headerTableModel.addColumn("Value");
-        headerTableModel.addRow(new Object[]{"",""});
+        headerTableModel.addRow(new Object[]{"Accept","*/*"});
+        headerTableModel.addRow(new Object[]{"Content-Type","application/json"});
+
         headerTable = new JTable(headerTableModel);
         addHeaderButton = new JButton("Add header");
         removeHeaderButton = new JButton("Remove header");

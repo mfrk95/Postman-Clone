@@ -58,7 +58,6 @@ public class UrlDaoImpl implements UrlDao {
             preparedStatement.setString(1,url.getUrl());
             preparedStatement.setInt(2,url.getId());
             preparedStatement.execute();
-            System.out.println("Update ejecutado");
 
         }catch(SQLException ex){
             ex.printStackTrace();
@@ -73,7 +72,6 @@ public class UrlDaoImpl implements UrlDao {
             PreparedStatement preparedStatement = conn.prepareStatement("DELETE FROM url WHERE url_id = ?");
             preparedStatement.setInt(1,url.getId());
             preparedStatement.execute();
-            System.out.println("Delete ejecutado");
 
         }catch(SQLException ex){
             ex.printStackTrace();

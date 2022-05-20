@@ -1,16 +1,14 @@
 package com.up.swing;
 
-
+import com.google.gson.JsonSyntaxException;
 import com.up.domain.Url;
 import com.up.service.HttpService;
 import com.up.service.UrlService;
 import com.up.swing.tabs.MainTab;
 import org.apache.hc.core5.http.ParseException;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.*;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -25,30 +23,26 @@ public class App extends JFrame  {
 
     public App() {
         this.setTitle("Postman");
-
         urlBar = new UrlBar();
         mainTab = new MainTab();
+
+
 
         // Action listener for Send button
         urlBar.getSendButton().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(urlBar.getUrlTextField().getText().equals("")){
-                    urlBar.getResponseLabel().setForeground(Color.RED);
-                    urlBar.getResponseLabel().setText("Ingrese una URL válida");
-                    urlBar.getResponseLabel().setVisible(true);
-                }else{
-                try {
-                    Vector vector = mainTab.getHeaderTab().getHeaderTableModel().getDataVector();
-                    Iterator it = vector.iterator();
-                    List<Object> headers = new ArrayList<>();
-                    while (it.hasNext()) {
+                Vector vector = mainTab.getHeaderTab().getHeaderTableModel().getDataVector();
+                Iterator it = vector.iterator();
+                List<Object> headers = new ArrayList<>();
+                while (it.hasNext()) {
                         headers.add(it.next());
-                    }
+                }
+                try {
                     List<String> response = httpService.executeRequest(
                             urlBar.getComboBox().getSelectedItem().toString(),
                             urlBar.getUrlTextField().getText(),
-                            mainTab.getBodyTab().getBodyText().getText(),headers);
+                            mainTab.getBodyTab().getBodyText().getText(), headers);
 
                     urlBar.getResponseLabel().setText(response.get(0));
                     mainTab.getResponseTab().getResponseText().setText(response.get(2));
@@ -58,14 +52,21 @@ public class App extends JFrame  {
                         urlBar.getResponseLabel().setForeground(Color.RED);
                     }
                     urlBar.getResponseLabel().setVisible(true);
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                } catch (ParseException ex) {
-                    ex.printStackTrace();
+                } catch(IOException ex){
+                    if(ex.toString().contains("Target host is not specified") || ex.toString().contains("Unroutable protocol scheme")){
+                        JOptionPane.showMessageDialog(null,"Please include protocol in the URL (http/https)","Error",JOptionPane.ERROR_MESSAGE);
+                    }
+                    if(ex.toString().contains("UnknownHostException")){
+                        JOptionPane.showMessageDialog(null,"The URL provided does not match any existing host");
+                    }
+                } catch (JsonSyntaxException ex){
+                    JOptionPane.showMessageDialog(null,"Error parsing response to JSON","Error", JOptionPane.ERROR_MESSAGE);
+                } catch(Exception ex){
+                    JOptionPane.showMessageDialog(null,"The URL is not correctly formed","Error", JOptionPane.ERROR_MESSAGE);
                 }
-            }}
-
-        });
+                }
+            }
+        );
 
         // Action Listener for Favorites button
         urlBar.getFavoritesButton().addActionListener(new ActionListener() {
