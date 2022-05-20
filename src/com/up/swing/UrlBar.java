@@ -1,17 +1,10 @@
 package com.up.swing;
 
-import com.up.domain.Url;
-import com.up.service.UrlService;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.Iterator;
-import java.util.List;
+
 
 public class UrlBar extends JPanel {
-    private UrlService urlService;
     private JComboBox comboBox;
     private JTextField urlTextField;
     private JButton sendButton;
@@ -21,7 +14,6 @@ public class UrlBar extends JPanel {
 
     public UrlBar(){
         String[] methods = {"GET","PUT","POST","DELETE"};
-        urlService = new UrlService();
         comboBox = new JComboBox(methods);
         urlTextField = new JTextField(30);
         sendButton = new JButton("Send");

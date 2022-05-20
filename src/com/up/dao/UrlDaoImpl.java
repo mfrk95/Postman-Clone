@@ -1,40 +1,35 @@
 package com.up.dao;
 
 import com.up.domain.Url;
+import com.up.jdbc.DBManager;
 
+import javax.swing.*;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UrlDaoImpl implements UrlDao {
-    private Connection conn;
-    static final String DB_URL = "jdbc:mysql://localhost:3306/labo1";
-    static final String USER = "root";
-    static final String PASS = "123456";
-
     public UrlDaoImpl()  {
     }
 
     @Override
     public void saveUrl(Url url) {
         try{
-            conn = DriverManager.getConnection(DB_URL,USER,PASS);
+            Connection conn = DBManager.connect();
             PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO url VALUES (null,?)");
             preparedStatement.setString(1,url.getUrl());
             preparedStatement.execute();
 
         }catch(SQLException ex){
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null,"Error saving URL","Error",JOptionPane.ERROR_MESSAGE);
         }
-
-
     }
 
     @Override
     public List<Url> getAllUrls() {
         List<Url> urlList = new ArrayList();
         try{
-            conn = DriverManager.getConnection(DB_URL,USER,PASS);
+            Connection conn = DBManager.connect();
             PreparedStatement preparedStatement = conn.prepareStatement("SELECT * FROM url");
             ResultSet rs = preparedStatement.executeQuery();
             while(rs.next()) {
@@ -44,7 +39,7 @@ public class UrlDaoImpl implements UrlDao {
                 urlList.add(url);
             }
         }catch(SQLException ex){
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null,"Error getting all URLS","Error",JOptionPane.ERROR_MESSAGE);
         }finally{
             return urlList;
         }
@@ -53,14 +48,13 @@ public class UrlDaoImpl implements UrlDao {
     @Override
     public void updateUrl(Url url) {
         try{
-            conn = DriverManager.getConnection(DB_URL,USER,PASS);
+            Connection conn = DBManager.connect();
             PreparedStatement preparedStatement = conn.prepareStatement("UPDATE url SET url_name =? WHERE url_id=? ");
             preparedStatement.setString(1,url.getUrl());
             preparedStatement.setInt(2,url.getId());
             preparedStatement.execute();
-
         }catch(SQLException ex){
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null,"Error updating URL","Error",JOptionPane.ERROR_MESSAGE);
         }
 
     }
@@ -68,17 +62,13 @@ public class UrlDaoImpl implements UrlDao {
     @Override
     public void deleteUrl(Url url) {
         try{
-            conn = DriverManager.getConnection(DB_URL,USER,PASS);
+            Connection conn = DBManager.connect();
             PreparedStatement preparedStatement = conn.prepareStatement("DELETE FROM url WHERE url_id = ?");
             preparedStatement.setInt(1,url.getId());
             preparedStatement.execute();
-
         }catch(SQLException ex){
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null,"Error deleting URL","Error",JOptionPane.ERROR_MESSAGE);
         }
-
-
-
     }
 }
 

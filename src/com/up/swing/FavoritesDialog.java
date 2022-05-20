@@ -36,7 +36,7 @@ public class FavoritesDialog extends JDialog {
 
         //gbc for addFavorites
         GridBagConstraints addFavoriteConstraints = new GridBagConstraints();
-        addFavoriteConstraints.insets = new Insets(0,0,10,0);
+        addFavoriteConstraints.insets = new Insets(0,20,10,20);
         addFavoriteConstraints.gridx=0;
         addFavoriteConstraints.gridy=1;
         addFavoriteConstraints.weightx=1;
@@ -47,8 +47,8 @@ public class FavoritesDialog extends JDialog {
         //gbc for addUrlFavorite
         GridBagConstraints addUrlFavoriteConstraints = new GridBagConstraints();
         addUrlFavoriteConstraints.insets = new Insets(0,0,10,0);
-        addUrlFavoriteConstraints.gridx=0;
-        addUrlFavoriteConstraints.gridy=2;
+        addUrlFavoriteConstraints.gridx=1;
+        addUrlFavoriteConstraints.gridy=1;
         addUrlFavoriteConstraints.weightx=1;
 
 
@@ -57,7 +57,7 @@ public class FavoritesDialog extends JDialog {
 
         //gbc for editFavorite
         GridBagConstraints editFavoriteConstraints = new GridBagConstraints();
-        editFavoriteConstraints.insets = new Insets(0,0,10,0);
+        editFavoriteConstraints.insets = new Insets(0,20,10,20);
         editFavoriteConstraints.gridx=0;
         editFavoriteConstraints.gridy=3;
         editFavoriteConstraints.weightx=1;
@@ -68,8 +68,8 @@ public class FavoritesDialog extends JDialog {
         //gbc for editUrlFavorite
         GridBagConstraints editUrlFavoriteConstraints = new GridBagConstraints();
         editUrlFavoriteConstraints.insets = new Insets(0,0,10,0);
-        editUrlFavoriteConstraints.gridx=0;
-        editUrlFavoriteConstraints.gridy=4;
+        editUrlFavoriteConstraints.gridx=1;
+        editUrlFavoriteConstraints.gridy=3;
         editUrlFavoriteConstraints.weightx=1;
 
 
@@ -101,7 +101,7 @@ public class FavoritesDialog extends JDialog {
         buttonsPanel.add(removeFavorite,removeFavoriteConstraints);
 
         this.add(tableScrollPane,BorderLayout.NORTH);
-        this.add(buttonsPanel,BorderLayout.SOUTH);
+        this.add(buttonsPanel,BorderLayout.WEST);
         this.setTitle("Favorites");
         this.setBounds(100,50,600,370);
         this.setVisible(false);

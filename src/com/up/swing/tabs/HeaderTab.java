@@ -3,8 +3,6 @@ package com.up.swing.tabs;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class HeaderTab extends JPanel{
     private JTable headerTable;
@@ -29,26 +27,14 @@ public class HeaderTab extends JPanel{
         headerTableModel = new DefaultTableModel();
         headerTableModel.addColumn("Key");
         headerTableModel.addColumn("Value");
+
+        // Set some default headers
         headerTableModel.addRow(new Object[]{"Accept","*/*"});
         headerTableModel.addRow(new Object[]{"Content-Type","application/json"});
 
         headerTable = new JTable(headerTableModel);
         addHeaderButton = new JButton("Add header");
         removeHeaderButton = new JButton("Remove header");
-        addHeaderButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                headerTableModel.addRow(new Object[]{"", ""});
-            }
-        });
-        removeHeaderButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                if (headerTableModel.getRowCount() > 1) {
-                    headerTableModel.removeRow(1);
-                }
-            }
-        });
         buttonsPanel = new JPanel();
         tableScrollPane = new JScrollPane();
         tableScrollPane.setPreferredSize(new Dimension(500,150));
@@ -59,11 +45,9 @@ public class HeaderTab extends JPanel{
         this.add(buttonsPanel, buttonsPanelConstraints);
     }
 
-    public JTable getHeaderTable(){
-        return headerTable;
-    }
-
     public DefaultTableModel getHeaderTableModel(){
         return headerTableModel;
     }
+    public JButton getAddHeaderButton(){ return addHeaderButton; }
+    public JButton getRemoveHeaderButton(){ return removeHeaderButton; }
 }

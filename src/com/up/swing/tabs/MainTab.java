@@ -1,7 +1,6 @@
 package com.up.swing.tabs;
 
 import javax.swing.*;
-import java.awt.*;
 
 public class MainTab extends JTabbedPane {
     private ResponseTab responseTab;

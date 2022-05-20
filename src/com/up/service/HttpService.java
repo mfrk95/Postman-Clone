@@ -23,6 +23,9 @@ public class HttpService {
     public List<String> executeRequest(String method, String url, String requestBody, List<Object> headers) throws IOException, ParseException {
         List<String> serverResponse = new ArrayList<>();
         Iterator it = headers.iterator();
+        CloseableHttpResponse httpResponse = null;
+        StringEntity requestBodyEntity =  null;
+
         switch (method) {
 
             case "GET":
@@ -32,20 +35,7 @@ public class HttpService {
                         setHeaders(it.next(), getRequest);
                     }
                 }
-                CloseableHttpResponse getResponse = httpClient.execute(getRequest);
-                serverResponse.add((getResponse.getCode() + " " + getResponse.getReasonPhrase()));
-                serverResponse.add(getResponseColor(getResponse.getCode()));
-                HttpEntity entity = getResponse.getEntity();
-                String responseType = entity.getContentType();
-                Gson gson = new GsonBuilder().setPrettyPrinting().create();
-                String response = EntityUtils.toString(entity, "UTF-8");
-                if(responseType.contains("application/json")){
-                    JsonElement je = JsonParser.parseString(response);
-                    String responseJson = gson.toJson(je);
-                    serverResponse.add(responseJson);
-                }else{
-                    serverResponse.add(response);
-                }
+                httpResponse = httpClient.execute(getRequest);
                 break;
 
             case "POST":
@@ -55,22 +45,9 @@ public class HttpService {
                         setHeaders(it.next(), postRequest);
                     }
                 }
-                StringEntity requestBodyEntity = new StringEntity(requestBody);
+                requestBodyEntity = new StringEntity(requestBody);
                 postRequest.setEntity(requestBodyEntity);
-                CloseableHttpResponse postResponse = httpClient.execute(postRequest);
-                serverResponse.add(postResponse.getCode() + " " + postResponse.getReasonPhrase());
-                serverResponse.add(getResponseColor(postResponse.getCode()));
-                HttpEntity entity2 = postResponse.getEntity();
-                String responseType2 = entity2.getContentType();
-                Gson gson2 = new GsonBuilder().setPrettyPrinting().create();
-                String response2 = EntityUtils.toString(entity2, "UTF-8");
-                if(responseType2.contains("application/json")){
-                    JsonElement je2 = JsonParser.parseString(response2);
-                    String responseJson2 = gson2.toJson(je2);
-                    serverResponse.add(responseJson2);
-                }else{
-                    serverResponse.add(response2);
-                }
+                httpResponse = httpClient.execute(postRequest);
                 break;
 
 
@@ -82,22 +59,9 @@ public class HttpService {
                     }
                 }
 
-                StringEntity requestBodyEntity2 = new StringEntity(requestBody);
-                putRequest.setEntity(requestBodyEntity2);
-                CloseableHttpResponse putResponse = httpClient.execute(putRequest);
-                serverResponse.add((putResponse.getCode() + " " + putResponse.getReasonPhrase()));
-                serverResponse.add(getResponseColor(putResponse.getCode()));
-                HttpEntity entity3 = putResponse.getEntity();
-                String responseType3 = entity3.getContentType();
-                Gson gson3 = new GsonBuilder().setPrettyPrinting().create();
-                String response3 = EntityUtils.toString(entity3, "UTF-8");
-                if(responseType3.contains("application/json")){
-                    JsonElement je3 = JsonParser.parseString(response3);
-                    String responseJson3 = gson3.toJson(je3);
-                    serverResponse.add(responseJson3);
-                }else{
-                    serverResponse.add(response3);
-                }
+                requestBodyEntity = new StringEntity(requestBody);
+                putRequest.setEntity(requestBodyEntity);
+                httpResponse = httpClient.execute(putRequest);
                 break;
 
 
@@ -108,27 +72,31 @@ public class HttpService {
                         setHeaders(it.next(), deleteRequest);
                     }
                 }
-                StringEntity requestBodyEntity3 = new StringEntity(requestBody);
-                deleteRequest.setEntity(requestBodyEntity3);
-                CloseableHttpResponse deleteResponse = httpClient.execute(deleteRequest);
-                serverResponse.add((deleteResponse.getCode() + " " + deleteResponse.getReasonPhrase()));
-                serverResponse.add(getResponseColor(deleteResponse.getCode()));
-                HttpEntity entity4 = deleteResponse.getEntity();
-                String responseType4 = entity4.getContentType();
-                Gson gson4 = new GsonBuilder().setPrettyPrinting().create();
-                String response4 = EntityUtils.toString(entity4, "UTF-8");
-                if(response4.contains("application/json")){
-                    JsonElement je4 = JsonParser.parseString(response4);
-                    String responseJson4 = gson4.toJson(je4);
-                    serverResponse.add(responseJson4);
-                    serverResponse.add(response4);
-                }else{
-                    serverResponse.add(response4);
-                }
+                requestBodyEntity = new StringEntity(requestBody);
+                deleteRequest.setEntity(requestBodyEntity);
+                httpResponse = httpClient.execute(deleteRequest);
                 break;
 
 
         }
+
+
+        serverResponse.add((httpResponse.getCode() + " " + httpResponse.getReasonPhrase()));
+        serverResponse.add(getResponseColor(httpResponse.getCode()));
+        HttpEntity entity = httpResponse.getEntity();
+        String responseType = entity.getContentType();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String response = EntityUtils.toString(entity, "UTF-8");
+
+        if(responseType.contains("application/json")){
+            JsonElement je = JsonParser.parseString(response);
+            String responseJson = gson.toJson(je);
+            serverResponse.add(responseJson);
+        }else{
+            serverResponse.add(response);
+        }
+
+
         return serverResponse;
 
     }
@@ -152,7 +120,6 @@ public class HttpService {
         String[] keyvalue = headerString.split(",");
         String key = keyvalue[0];
         String value = keyvalue[1];
-        System.out.println("Key: " + key + " Value: " + value);
         request.addHeader(key, value);
     }
 

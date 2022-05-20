@@ -25,7 +25,7 @@ public class App extends JFrame  {
         this.setTitle("Postman");
         urlBar = new UrlBar();
         mainTab = new MainTab();
-
+        JFrame frame = this;
 
 
         // Action listener for Send button
@@ -54,15 +54,15 @@ public class App extends JFrame  {
                     urlBar.getResponseLabel().setVisible(true);
                 } catch(IOException ex){
                     if(ex.toString().contains("Target host is not specified") || ex.toString().contains("Unroutable protocol scheme")){
-                        JOptionPane.showMessageDialog(null,"Please include protocol in the URL (http/https)","Error",JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(frame,"Please include protocol in the URL (http/https)","Error",JOptionPane.ERROR_MESSAGE);
                     }
                     if(ex.toString().contains("UnknownHostException")){
-                        JOptionPane.showMessageDialog(null,"The URL provided does not match any existing host");
+                        JOptionPane.showMessageDialog(frame,"The URL provided does not match any existing host");
                     }
                 } catch (JsonSyntaxException ex){
-                    JOptionPane.showMessageDialog(null,"Error parsing response to JSON","Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame,"Error parsing response to JSON","Error", JOptionPane.ERROR_MESSAGE);
                 } catch(Exception ex){
-                    JOptionPane.showMessageDialog(null,"The URL is not correctly formed","Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(frame,"The URL is not correctly formed","Error", JOptionPane.ERROR_MESSAGE);
                 }
                 }
             }
@@ -90,9 +90,12 @@ public class App extends JFrame  {
             @Override
             public void actionPerformed(ActionEvent e) {
                 int selectedRow = urlBar.getFavoritesDialog().getFavoritesTable().getSelectedRow();
-                Object selectedUrl = urlBar.getFavoritesDialog().getFavoritesTableModel().getValueAt(selectedRow,1);
-                urlBar.getUrlTextField().setText(selectedUrl.toString());
-
+                if(selectedRow == -1){
+                    JOptionPane.showMessageDialog(urlBar.getFavoritesDialog(),"Please select an URL from the table");
+                }else{
+                    Object selectedUrl = urlBar.getFavoritesDialog().getFavoritesTableModel().getValueAt(selectedRow,1);
+                    urlBar.getUrlTextField().setText(selectedUrl.toString());
+                }
             }
         });
 
@@ -109,7 +112,7 @@ public class App extends JFrame  {
             }
         });
 
-        //Action Listener for Edit favorite button
+        // Action Listener for Edit favorite button
         urlBar.getFavoritesDialog().getEditFavorite().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -124,18 +127,40 @@ public class App extends JFrame  {
             }
         });
 
+        // Action listener for Remove favorite button
         urlBar.getFavoritesDialog().getRemoveFavorite().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Url url = new Url();
                 int selectedRow = urlBar.getFavoritesDialog().getFavoritesTable().getSelectedRow();
-                url.setId ((int)urlBar.getFavoritesDialog().getFavoritesTable().getValueAt(selectedRow, 0));
-                url.setUrl((urlBar.getFavoritesDialog().getFavoritesTable().getValueAt(selectedRow, 0)).toString());
-                urlService.deleteUrl(url);
-                JOptionPane.showMessageDialog(urlBar.getFavoritesDialog(),"Url deleted successfully");
-                urlBar.getFavoritesButton().doClick();
+                if (selectedRow == -1) {
+                    JOptionPane.showMessageDialog(urlBar.getFavoritesDialog(), "Please select an URL from the table");
+                } else {
+                    url.setId((int) urlBar.getFavoritesDialog().getFavoritesTable().getValueAt(selectedRow, 0));
+                    url.setUrl((urlBar.getFavoritesDialog().getFavoritesTable().getValueAt(selectedRow, 0)).toString());
+                    urlService.deleteUrl(url);
+                    JOptionPane.showMessageDialog(urlBar.getFavoritesDialog(), "Url deleted successfully");
+                    urlBar.getFavoritesButton().doClick();
+                }
             }
 
+        });
+        // Action listener for Add headers button
+        mainTab.getHeaderTab().getAddHeaderButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                mainTab.getHeaderTab().getHeaderTableModel().addRow(new Object[]{"", ""});
+            }
+        });
+
+        // Action listener for Remove headers button
+        mainTab.getHeaderTab().getRemoveHeaderButton().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if ( mainTab.getHeaderTab().getHeaderTableModel().getRowCount() > 1) {
+                    mainTab.getHeaderTab().getHeaderTableModel().removeRow(1);
+                }
+            }
         });
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.add(urlBar, BorderLayout.NORTH);
